@@ -27,6 +27,9 @@ server <- function(input, output) {
         dados <- dados %>% select(c('customer_name', 'customer_email', 'tracking_code'))
         dados$customer_name <- sub(" .*", "", dados$customer_name)
         dados$customer_name <-stringr::str_to_title(dados$customer_name)
+        dados <- dados %>% group_by(customer_name, customer_email) %>% 
+            mutate(id_rank = row_number()) %>% 
+            tidyr::pivot_wider(names_from = id_rank, values_from =tracking_code, names_prefix = 'tracking_code')
         return(dados)
     })
     
